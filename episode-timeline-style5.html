@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chorus — Episode UI Style 5 Mockup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,700;1,9..144,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FDFAF6;
+    --bg-card: #FFFFFF;
+    --bg-secondary: #F5EFE8;
+    --border: #E8DFD4;
+    --accent: #D4622B;
+    --green: #2E6B4F;
+    --text: #1A1612;
+    --text-secondary: #6B5E52;
+    --text-tertiary: #9C8E80;
+    --rail-width: 48px;
+    --glyph-zone: 64px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    font-family: 'Inter', sans-serif;
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ── Nav ── */
+  nav {
+    background: var(--bg-card);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  }
+  .logo-mark { color: var(--accent); }
+  .logo-word {
+    font-family: 'Fraunces', serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: -0.5px;
+  }
+  .nav-spacer { flex: 1; }
+  .nav-badge {
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    background: var(--bg-secondary);
+  }
+
+  /* ── Episode header ── */
+  .ep-header {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 28px 24px 0;
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+  }
+  .artwork {
+    width: 72px;
+    height: 72px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--accent) 0%, #b84d20 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    flex-shrink: 0;
+  }
+  .ep-meta { flex: 1; }
+  .ep-show {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
+  .ep-title {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+  .ep-stats {
+    font-size: 13px;
+    color: var(--text-tertiary);
+    display: flex;
+    gap: 16px;
+  }
+  .ep-stats span { display: flex; align-items: center; gap: 4px; }
+
+  /* ── Mini audio player ── */
+  .mini-player {
+    max-width: 1100px;
+    margin: 16px auto 0;
+    padding: 0 24px;
+  }
+  .player-bar {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  }
+  .play-btn {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+    cursor: pointer;
+  }
+  .progress-track {
+    flex: 1;
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    position: relative;
+  }
+  .progress-fill {
+    width: 32%;
+    height: 100%;
+    background: var(--accent);
+    border-radius: 2px;
+    position: relative;
+  }
+  .progress-fill::after {
+    content: '';
+    position: absolute;
+    right: -5px; top: -4px;
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid var(--bg-card);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  }
+  .time-label { font-size: 12px; color: var(--text-tertiary); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .speed-btn { font-size: 12px; font-weight: 600; color: var(--text-secondary); padding: 3px 8px; border: 1px solid var(--border); border-radius: 5px; cursor: pointer; }
+
+  /* ── Main layout ── */
+  .episode-body {
+    max-width: 1100px;
+    margin: 20px auto 60px;
+    padding: 0 24px;
+    display: grid;
+    grid-template-columns: var(--rail-width) var(--glyph-zone) 1fr 280px;
+    gap: 0;
+    position: relative;
+  }
+
+  /* ── Vertical timeline rail ── */
+  .timeline-col {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .rail {
+    width: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  .playhead {
+    position: absolute;
+    top: 32%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 13px;
+    height: 13px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid var(--bg);
+    box-shadow: 0 0 0 3px rgba(212,98,43,0.25), 0 0 12px rgba(212,98,43,0.4);
+    z-index: 10;
+  }
+  /* Elapsed portion of rail */
+  .rail-elapsed {
+    width: 3px;
+    background: var(--accent);
+    border-radius: 2px;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    height: 32%;
+  }
+
+  /* Tick marks */
+  .tick {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 0;
+  }
+  .tick-line {
+    width: 8px;
+    height: 1px;
+    background: var(--text-tertiary);
+    opacity: 0.5;
+  }
+  .tick-label {
+    position: absolute;
+    right: calc(100% + 6px);
+    font-size: 10px;
+    color: var(--text-tertiary);
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ── Glyph zone ── */
+  .glyph-col {
+    position: relative;
+    padding-left: 8px;
+  }
+
+  .glyph-cluster {
+    position: absolute;
+    left: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    transform: translateY(-50%);
+  }
+  .glyph-row {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    line-height: 1;
+  }
+  .glyph {
+    display: inline-block;
+    transition: transform 0.15s;
+  }
+  .glyph:hover { transform: scale(1.2); }
+
+  /* Glow pulse behind rail at hot moments */
+  .glow-spot {
+    position: absolute;
+    left: calc(var(--rail-width) * 0.5);
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── Annotation cards ── */
+  .annotations-col {
+    padding: 0 16px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .annotation-card {
+    position: absolute;
+    left: 16px;
+    right: 0;
+    transform: translateY(-50%);
+  }
+
+  .annotation-inner {
+    background: var(--bg-card);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    position: relative;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .annotation-inner:hover {
+    border-color: var(--accent);
+    box-shadow: 0 2px 12px rgba(212,98,43,0.12);
+  }
+
+  /* Hairline connector */
+  .connector {
+    position: absolute;
+    right: 100%;
+    top: 50%;
+    height: 1px;
+    background: var(--border);
+    pointer-events: none;
+  }
+  .connector-dot {
+    position: absolute;
+    right: -3px;
+    top: -2px;
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--accent);
+    opacity: 0.7;
+  }
+
+  .ann-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+  .ann-avatar {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+    color: white;
+    flex-shrink: 0;
+  }
+  .ann-name { font-size: 12px; font-weight: 600; color: var(--text-secondary); }
+  .ann-timestamp {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent);
+    background: rgba(212,98,43,0.08);
+    padding: 2px 6px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-left: auto;
+    display: flex; align-items: center; gap: 3px;
+  }
+  .ann-timestamp:hover { background: rgba(212,98,43,0.15); }
+  .ann-text { font-size: 13px; line-height: 1.5; color: var(--text); }
+
+  /* ── Activity panel ── */
+  .activity-col {
+    border-left: 1px solid var(--border);
+    padding: 0 0 0 20px;
+  }
+  .activity-header {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+    margin-bottom: 14px;
+    padding-top: 2px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .live-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: #E53E3E;
+    animation: pulse 1.5s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+  .activity-comment {
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .activity-comment:last-child { border-bottom: none; }
+  .act-meta { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+  .act-name { font-size: 11px; font-weight: 600; color: var(--text-secondary); }
+  .act-time { font-size: 11px; color: var(--text-tertiary); margin-left: auto; }
+  .act-text { font-size: 12px; line-height: 1.5; color: var(--text); }
+
+  /* ── Composer ── */
+  .composer-card {
+    position: absolute;
+    left: 16px; right: 0;
+    bottom: -60px;
+    background: var(--bg-card);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 12px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+  .composer-stamp {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent);
+    background: rgba(212,98,43,0.08);
+    padding: 3px 7px;
+    border-radius: 4px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .composer-input {
+    flex: 1;
+    border: none;
+    background: none;
+    font-size: 13px;
+    font-family: 'Inter', sans-serif;
+    color: var(--text-secondary);
+    outline: none;
+  }
+  .composer-send {
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 5px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  /* section label */
+  .section-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+    margin-bottom: 12px;
+    grid-column: 3;
+  }
+</style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="26" height="26">
+    <path d="M 150.4 60.6 A 64 64 0 1 0 150.4 139.4" fill="none" stroke="#D4622B" stroke-width="14" stroke-linecap="round"/>
+    <path d="M 137.0 71.1 A 47 47 0 1 0 137.0 128.9" fill="none" stroke="#D4622B" stroke-width="11" stroke-linecap="round"/>
+    <path d="M 123.6 81.5 A 30 30 0 1 0 123.6 118.5" fill="none" stroke="#D4622B" stroke-width="8" stroke-linecap="round"/>
+    <circle cx="113" cy="100" r="5" fill="none" stroke="#D4622B" stroke-width="4"/>
+  </svg>
+  <span class="logo-word">Chorus</span>
+  <div class="nav-spacer"></div>
+  <span class="nav-badge">🔔 FX on</span>
+</nav>
+
+<!-- Episode header -->
+<div class="ep-header">
+  <div class="artwork">🎙️</div>
+  <div class="ep-meta">
+    <div class="ep-show">Down Round</div>
+    <div class="ep-title">Nvidia: From Sexy Elves to a $1 Trillion Company</div>
+    <div class="ep-stats">
+      <span>⏱ 1hr 24min</span>
+      <span>💬 14 annotations</span>
+      <span style="color: #2E6B4F; font-weight: 500;">● 6 listening now</span>
+    </div>
+  </div>
+</div>
+
+<!-- Mini player -->
+<div class="mini-player">
+  <div class="player-bar">
+    <div class="play-btn">⏸</div>
+    <span class="time-label">27:06</span>
+    <div class="progress-track">
+      <div class="progress-fill"></div>
+    </div>
+    <span class="time-label">1:24:18</span>
+    <span class="speed-btn">1×</span>
+    <span style="font-size:13px; margin-left:4px;">↩15</span>
+    <span style="font-size:13px; margin-left:8px;">30↪</span>
+    <span style="font-size:16px; margin-left:12px;">🔉</span>
+    <input type="range" style="width:56px; accent-color: var(--accent);" value="80" min="0" max="100">
+  </div>
+</div>
+
+<!-- Main body -->
+<div class="episode-body" id="epBody" style="height: 780px;">
+
+  <!-- Timeline rail column -->
+  <div class="timeline-col" id="timelineCol">
+    <div class="rail" id="rail"></div>
+    <div class="rail-elapsed" id="railElapsed"></div>
+    <div class="playhead" id="playhead"></div>
+
+    <!-- Tick marks at each annotation time -->
+    <!-- Positioned via JS -->
+  </div>
+
+  <!-- Glyph zone -->
+  <div class="glyph-col" id="glyphCol"></div>
+
+  <!-- Annotation cards -->
+  <div class="annotations-col" id="annotationsCol">
+    <div style="font-size:11px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--text-tertiary); margin-bottom:8px; padding-top:2px;">Annotations</div>
+  </div>
+
+  <!-- Activity panel -->
+  <div class="activity-col">
+    <div class="activity-header">
+      <div class="live-dot"></div>
+      Episode Activity
+    </div>
+
+    <div class="activity-comment">
+      <div class="act-meta">
+        <div class="ann-avatar" style="background:#D4622B; width:20px; height:20px; font-size:9px;">JR</div>
+        <span class="act-name">JR</span>
+        <span class="act-time">just now</span>
+      </div>
+      <div class="act-text">This is the most insane origin story 😂</div>
+    </div>
+
+    <div class="activity-comment">
+      <div class="act-meta">
+        <div class="ann-avatar" style="background:#2E6B4F; width:20px; height:20px; font-size:9px;">AM</div>
+        <span class="act-name">AM</span>
+        <span class="act-time">2m ago</span>
+      </div>
+      <div class="act-text">Didn't realise how close Nvidia came to being a GPU for gaming only</div>
+    </div>
+
+    <div class="activity-comment">
+      <div class="act-meta">
+        <div class="ann-avatar" style="background:#6B5E52; width:20px; height:20px; font-size:9px;">SK</div>
+        <span class="act-name">SK</span>
+        <span class="act-time">5m ago</span>
+      </div>
+      <div class="act-text">Glad I found this community — great episode</div>
+    </div>
+
+    <div class="activity-comment">
+      <div class="act-meta">
+        <div class="ann-avatar" style="background:#D4622B; width:20px; height:20px; font-size:9px;">TO</div>
+        <span class="act-name">TO</span>
+        <span class="act-time">8m ago</span>
+      </div>
+      <div class="act-text">CUDA was the real bet</div>
+    </div>
+
+    <div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border);">
+      <div style="font-size:12px; color:var(--text-tertiary); font-style:italic;">Leave a timeless comment…</div>
+      <div style="display:flex; gap:8px; margin-top:8px;">
+        <input type="text" placeholder="Your thought on the episode…" style="flex:1; padding:7px 10px; border-radius:7px; border:1px solid var(--border); font-size:12px; font-family:Inter,sans-serif; background:var(--bg-secondary);">
+        <button style="background:var(--green); color:white; border:none; border-radius:7px; padding:7px 12px; font-size:12px; font-weight:600; cursor:pointer;">Post</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ── Data: annotations with time positions ──────────────────────────────────
+const DURATION = 84 * 60 + 18; // 1:24:18 in seconds
+const PLAYHEAD_TIME = 27 * 60 + 6; // 27:06
+
+const annotations = [
+  {
+    time: 4 * 60 + 12,
+    user: 'JR', color: '#D4622B',
+    text: 'Love how they frame the early GPU wars. Pure chaos.',
+    reactions: { '❤️': 3, '🔥': 1 },
+  },
+  {
+    time: 9 * 60 + 44,
+    user: 'AM', color: '#2E6B4F',
+    text: 'The "sexy elves" pitch is genuinely one of the funniest things in tech history.',
+    reactions: { '😂': 5, '❤️': 2 },
+  },
+  {
+    time: 14 * 60 + 30,
+    user: 'SK', color: '#6B5E52',
+    text: 'Jensen Huang is an absolute missionary for his product vision.',
+    reactions: { '💡': 4, '❤️': 2, '🔥': 1 },
+  },
+  {
+    time: 22 * 60 + 10,
+    user: 'TO', color: '#8B5E3C',
+    text: 'CUDA bet was the inflection point. Everything else followed.',
+    reactions: { '💡': 6, '🔥': 3 },
+  },
+  {
+    time: 27 * 60 + 6, // at playhead
+    user: 'JR', color: '#D4622B',
+    text: 'This part about the data centre pivot — nobody saw this coming in 2012.',
+    reactions: { '🤯': 4, '💡': 2 },
+    highlight: true,
+  },
+  {
+    time: 35 * 60 + 50,
+    user: 'AM', color: '#2E6B4F',
+    text: 'The transformer moment is where everything snapped into place for me.',
+    reactions: { '🔥': 7, '🤯': 3, '💡': 2 },
+  },
+  {
+    time: 48 * 60 + 20,
+    user: 'SK', color: '#6B5E52',
+    text: 'A trillion dollar company. In gaming cards. Unbelievable arc.',
+    reactions: { '❤️': 5, '🔥': 4 },
+  },
+];
+
+function formatTime(secs) {
+  const m = Math.floor(secs / 60);
+  const s = Math.floor(secs % 60).toString().padStart(2, '0');
+  return `${m}:${s}`;
+}
+
+function timeToPercent(t) {
+  return (t / DURATION) * 100;
+}
+
+// ── Build layout ──────────────────────────────────────────────────────────
+const body = document.getElementById('epBody');
+const BODY_HEIGHT = 780;
+const timelineCol = document.getElementById('timelineCol');
+const glyphCol = document.getElementById('glyphCol');
+const annotationsCol = document.getElementById('annotationsCol');
+
+// Glyph emoji configs
+const GLYPH_SIZES = { 1: '14px', 2: '16px', 3: '18px', 4: '20px', 5: '22px', 6: '24px', 7: '26px' };
+function glyphSize(count) {
+  return GLYPH_SIZES[Math.min(count, 7)] || '26px';
+}
+
+annotations.forEach((ann, i) => {
+  const pct = timeToPercent(ann.time);
+  const top = (pct / 100) * BODY_HEIGHT;
+  const isPast = ann.time <= PLAYHEAD_TIME;
+
+  // ── Tick mark on rail ──
+  const tick = document.createElement('div');
+  tick.className = 'tick';
+  tick.style.top = `${top}px`;
+  tick.innerHTML = `<div class="tick-line"></div>`;
+  timelineCol.appendChild(tick);
+
+  // ── Glyph cluster ──
+  const cluster = document.createElement('div');
+  cluster.className = 'glyph-cluster';
+  cluster.style.top = `${top}px`;
+
+  // Glow spot (in timeline col)
+  const totalReactions = Object.values(ann.reactions).reduce((a, b) => a + b, 0);
+  const glowSize = 16 + totalReactions * 5;
+  const glowOpacity = Math.min(0.08 + totalReactions * 0.012, 0.35);
+  const glow = document.createElement('div');
+  glow.className = 'glow-spot';
+  glow.style.cssText = `
+    top: ${top}px;
+    width: ${glowSize}px;
+    height: ${glowSize}px;
+    background: radial-gradient(circle, rgba(212,98,43,${glowOpacity * 2.5}) 0%, rgba(212,98,43,0) 70%);
+    left: 50%;
+    transform: translate(-50%, -50%);
+    position: absolute;
+  `;
+  timelineCol.appendChild(glow);
+
+  // Glyph rows per emoji type
+  let glyphHtml = '';
+  for (const [emoji, count] of Object.entries(ann.reactions)) {
+    const size = glyphSize(count);
+    const row = Array(Math.min(count, 4)).fill(
+      `<span class="glyph" style="font-size:${size}; opacity:${isPast ? 1 : 0.45};">${emoji}</span>`
+    ).join('');
+    glyphHtml += `<div class="glyph-row">${row}</div>`;
+  }
+  cluster.innerHTML = glyphHtml;
+  glyphCol.appendChild(cluster);
+
+  // Also add a wider glow behind the glyph zone
+  const glowWide = document.createElement('div');
+  glowWide.style.cssText = `
+    position: absolute;
+    top: ${top}px;
+    left: -8px;
+    right: -4px;
+    height: 1px;
+    transform: translateY(-50%);
+    background: transparent;
+    box-shadow: 0 0 ${6 + totalReactions * 3}px ${Math.min(totalReactions * 2, 18)}px rgba(212,98,43,${Math.min(0.04 + totalReactions * 0.008, 0.18)});
+    pointer-events: none;
+  `;
+  glyphCol.appendChild(glowWide);
+
+  // ── Annotation card ──
+  const card = document.createElement('div');
+  card.className = 'annotation-card';
+  card.style.top = `${top}px`;
+
+  // Connector width: from left edge of annotation col to the rail
+  const connectorWidth = 8; // padding-left of annotations-col
+
+  card.innerHTML = `
+    <div class="annotation-inner" style="${ann.highlight ? 'border-color: var(--accent); box-shadow: 0 2px 16px rgba(212,98,43,0.15);' : ''}">
+      <div class="connector" style="width: ${connectorWidth}px;">
+        <div class="connector-dot"></div>
+      </div>
+      <div class="ann-meta">
+        <div class="ann-avatar" style="background:${ann.color};">${ann.user}</div>
+        <span class="ann-name">${ann.user}</span>
+        <span class="ann-timestamp">▶ ${formatTime(ann.time)}</span>
+      </div>
+      <div class="ann-text">${ann.text}</div>
+    </div>
+  `;
+  annotationsCol.appendChild(card);
+});
+
+// ── Playhead position ──
+const playheadPct = timeToPercent(PLAYHEAD_TIME);
+document.getElementById('playhead').style.top = `${(playheadPct / 100) * BODY_HEIGHT}px`;
+document.getElementById('railElapsed').style.height = `${(playheadPct / 100) * BODY_HEIGHT}px`;
+
+// ── Tick labels (time markers) ──
+[0, 15, 30, 45, 60, 75].forEach(min => {
+  const t = min * 60;
+  const top = (t / DURATION) * BODY_HEIGHT;
+  const label = document.createElement('div');
+  label.style.cssText = `
+    position: absolute;
+    top: ${top}px;
+    right: calc(50% + 6px);
+    font-size: 9px;
+    color: var(--text-tertiary);
+    font-variant-numeric: tabular-nums;
+    transform: translateY(-50%);
+    white-space: nowrap;
+  `;
+  label.textContent = `${min}m`;
+  timelineCol.appendChild(label);
+});
+
+// ── Composer (at playhead) ──
+const composerTop = (playheadPct / 100) * BODY_HEIGHT + 40;
+const composer = document.createElement('div');
+composer.style.cssText = `
+  position: absolute;
+  left: 16px;
+  right: 0;
+  top: ${composerTop}px;
+  background: var(--bg-card);
+  border: 1.5px solid var(--accent);
+  border-radius: 10px;
+  padding: 10px 12px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  box-shadow: 0 2px 12px rgba(212,98,43,0.12);
+`;
+composer.innerHTML = `
+  <span style="font-size:11px; font-weight:700; color:var(--accent); background:rgba(212,98,43,0.08); padding:3px 7px; border-radius:4px; white-space:nowrap; flex-shrink:0;">⏱ 27:06</span>
+  <input type="text" placeholder="Annotate this moment…" style="flex:1; border:none; background:none; font-size:13px; font-family:Inter,sans-serif; color:var(--text); outline:none;">
+  <button style="background:var(--accent); color:white; border:none; border-radius:6px; padding:6px 13px; font-size:12px; font-weight:600; cursor:pointer; white-space:nowrap;">Post</button>
+`;
+annotationsCol.appendChild(composer);
+</script>
+</body>
+</html>
