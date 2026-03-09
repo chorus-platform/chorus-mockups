@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chorus — Episode UI Style 5B</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,700;1,9..144,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FDFAF6;
+    --bg-card: #FFFFFF;
+    --bg-secondary: #F5EFE8;
+    --border: #E8DFD4;
+    --accent: #D4622B;
+    --green: #2E6B4F;
+    --text: #1A1612;
+    --text-secondary: #6B5E52;
+    --text-tertiary: #9C8E80;
+
+    /* Layout columns */
+    --col-glyph: 56px;   /* emoji zone LEFT of rail */
+    --col-rail: 40px;    /* timeline rail */
+    --col-ann: 1fr;      /* annotation cards RIGHT */
+    --col-activity: 240px; /* activity panel far right */
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); font-family: 'Inter', sans-serif; color: var(--text); min-height: 100vh; }
+
+  nav {
+    background: var(--bg-card); border-bottom: 1px solid var(--border);
+    padding: 12px 24px; display: flex; align-items: center; gap: 10px;
+    position: sticky; top: 0; z-index: 100; box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  }
+  .logo-word { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 700; color: var(--accent); letter-spacing: -0.5px; }
+
+  .ep-header { max-width: 1080px; margin: 0 auto; padding: 24px 24px 0; display: flex; gap: 16px; align-items: flex-start; }
+  .artwork { width: 64px; height: 64px; border-radius: 10px; background: linear-gradient(135deg, var(--accent), #b84d20); display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0; }
+  .ep-show { font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); margin-bottom: 3px; }
+  .ep-title { font-family: 'Fraunces', serif; font-size: 19px; font-weight: 700; color: var(--text); margin-bottom: 5px; line-height: 1.2; }
+  .ep-stats { font-size: 12px; color: var(--text-tertiary); display: flex; gap: 14px; }
+
+  .mini-player { max-width: 1080px; margin: 14px auto 0; padding: 0 24px; }
+  .player-bar { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 12px 18px; display: flex; align-items: center; gap: 14px; box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
+  .play-btn { width: 34px; height: 34px; border-radius: 50%; background: var(--accent); color: white; display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; cursor: pointer; }
+  .progress-track { flex: 1; height: 4px; background: var(--border); border-radius: 2px; position: relative; }
+  .progress-fill { width: 32%; height: 100%; background: var(--accent); border-radius: 2px; position: relative; }
+  .progress-fill::after { content: ''; position: absolute; right: -5px; top: -4px; width: 11px; height: 11px; border-radius: 50%; background: var(--accent); border: 2px solid var(--bg-card); box-shadow: 0 1px 3px rgba(0,0,0,0.15); }
+  .time-label { font-size: 11px; color: var(--text-tertiary); font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+  /* ── Main layout grid ── */
+  .episode-body {
+    max-width: 1080px;
+    margin: 18px auto 80px;
+    padding: 0 24px;
+    display: grid;
+    grid-template-columns: var(--col-glyph) var(--col-rail) var(--col-ann) var(--col-activity);
+    position: relative;
+  }
+
+  /* ── Glyph column (LEFT of rail) ── */
+  .glyph-col { position: relative; }
+
+  .glyph-cluster {
+    position: absolute;
+    right: 6px;   /* flush to right edge of glyph col, near rail */
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 1px;
+  }
+  .glyph-row { display: flex; align-items: center; gap: 1px; justify-content: flex-end; }
+
+  /* ── Rail column ── */
+  .rail-col { position: relative; display: flex; flex-direction: column; align-items: center; }
+  .rail { width: 2px; background: var(--border); border-radius: 2px; position: absolute; top: 0; bottom: 0; left: 50%; transform: translateX(-50%); }
+  .rail-elapsed { width: 2px; background: var(--accent); border-radius: 2px; position: absolute; top: 0; left: 50%; transform: translateX(-50%); }
+  .playhead {
+    position: absolute; left: 50%; transform: translate(-50%, -50%);
+    width: 12px; height: 12px; border-radius: 50%;
+    background: var(--accent); border: 2px solid var(--bg);
+    box-shadow: 0 0 0 3px rgba(212,98,43,0.2), 0 0 10px rgba(212,98,43,0.35);
+    z-index: 10;
+  }
+  .tick-mark {
+    position: absolute; left: 50%; transform: translateX(-50%);
+    display: flex; align-items: center;
+  }
+  .tick-line { width: 5px; height: 1px; background: var(--text-tertiary); opacity: 0.4; }
+  .tick-label {
+    position: absolute; right: calc(100% + 28px);
+    font-size: 9px; color: var(--text-tertiary);
+    font-variant-numeric: tabular-nums; white-space: nowrap;
+  }
+
+  /* ── Annotation column ── */
+  .ann-col { position: relative; }
+
+  /* Stagger levels: 3 horizontal offsets */
+  .ann-card {
+    position: absolute;
+    transform: translateY(-50%);
+  }
+  .ann-inner {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 10px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    transition: border-color 0.15s, box-shadow 0.15s;
+    cursor: pointer;
+  }
+  .ann-inner:hover { border-color: var(--accent); box-shadow: 0 2px 10px rgba(212,98,43,0.1); }
+
+  /* Hairline from card left edge back to rail */
+  .hairline {
+    position: absolute;
+    right: 100%;
+    top: 50%;
+    height: 1px;
+    background: var(--border);
+    pointer-events: none;
+    opacity: 0.7;
+  }
+  .hairline-dot {
+    position: absolute;
+    right: -3px; top: -2px;
+    width: 4px; height: 4px;
+    border-radius: 50%;
+    background: var(--accent);
+    opacity: 0.6;
+  }
+
+  .ann-meta { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+  .ann-avatar { width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 8px; font-weight: 700; color: white; flex-shrink: 0; }
+  .ann-name { font-size: 11px; font-weight: 600; color: var(--text-secondary); }
+  .ann-ts { font-size: 10px; font-weight: 600; color: var(--accent); background: rgba(212,98,43,0.08); padding: 1px 5px; border-radius: 3px; margin-left: auto; }
+  .ann-text { font-size: 12px; line-height: 1.45; color: var(--text); }
+
+  /* Highlight (at playhead) */
+  .ann-highlight .ann-inner { border-color: var(--accent); box-shadow: 0 2px 12px rgba(212,98,43,0.14); }
+
+  /* Composer */
+  .ann-composer {
+    position: absolute;
+    transform: translateY(-50%);
+  }
+  .ann-composer-inner {
+    background: var(--bg-card);
+    border: 1.5px solid var(--accent);
+    border-radius: 8px;
+    padding: 8px 10px;
+    display: flex; gap: 8px; align-items: center;
+    box-shadow: 0 2px 10px rgba(212,98,43,0.1);
+  }
+
+  /* ── Activity panel ── */
+  .activity-col { border-left: 1px solid var(--border); padding: 0 0 0 16px; }
+  .activity-header { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-tertiary); margin-bottom: 12px; display: flex; align-items: center; gap: 5px; }
+  .live-dot { width: 5px; height: 5px; border-radius: 50%; background: #E53E3E; animation: pulse 1.5s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(.8)} }
+  .act-item { margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+  .act-item:last-of-type { border-bottom: none; }
+  .act-meta { display: flex; align-items: center; gap: 5px; margin-bottom: 3px; }
+  .act-av { width: 16px; height: 16px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 7px; font-weight: 700; color: white; }
+  .act-name { font-size: 11px; font-weight: 600; color: var(--text-secondary); }
+  .act-time { font-size: 10px; color: var(--text-tertiary); margin-left: auto; }
+  .act-text { font-size: 11px; line-height: 1.45; color: var(--text); }
+
+  .timeless-composer { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border); }
+  .timeless-label { font-size: 11px; color: var(--text-tertiary); margin-bottom: 6px; }
+  .timeless-input { width: 100%; padding: 6px 8px; border-radius: 6px; border: 1px solid var(--border); font-size: 11px; font-family: 'Inter', sans-serif; background: var(--bg-secondary); color: var(--text); margin-bottom: 6px; }
+  .timeless-btn { background: var(--green); color: white; border: none; border-radius: 5px; padding: 5px 10px; font-size: 11px; font-weight: 600; cursor: pointer; }
+</style>
+</head>
+<body>
+
+<nav>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="24" height="24">
+    <path d="M 150.4 60.6 A 64 64 0 1 0 150.4 139.4" fill="none" stroke="#D4622B" stroke-width="14" stroke-linecap="round"/>
+    <path d="M 137.0 71.1 A 47 47 0 1 0 137.0 128.9" fill="none" stroke="#D4622B" stroke-width="11" stroke-linecap="round"/>
+    <path d="M 123.6 81.5 A 30 30 0 1 0 123.6 118.5" fill="none" stroke="#D4622B" stroke-width="8" stroke-linecap="round"/>
+    <circle cx="113" cy="100" r="5" fill="none" stroke="#D4622B" stroke-width="4"/>
+  </svg>
+  <span class="logo-word">Chorus</span>
+  <div style="flex:1"></div>
+  <span style="font-size:11px;padding:3px 9px;border-radius:5px;border:1px solid var(--border);color:var(--text-secondary)">🔔 FX on</span>
+</nav>
+
+<div class="ep-header">
+  <div class="artwork">🎙️</div>
+  <div>
+    <div class="ep-show">Down Round</div>
+    <div class="ep-title">Nvidia: From Sexy Elves to a $1 Trillion Company</div>
+    <div class="ep-stats">
+      <span>⏱ 1hr 24min</span>
+      <span>💬 14 annotations</span>
+      <span style="color:#2E6B4F;font-weight:500">● 6 listening now</span>
+    </div>
+  </div>
+</div>
+
+<div class="mini-player">
+  <div class="player-bar">
+    <div class="play-btn">⏸</div>
+    <span class="time-label">27:06</span>
+    <div class="progress-track"><div class="progress-fill"></div></div>
+    <span class="time-label">1:24:18</span>
+    <span style="font-size:12px;color:var(--text-secondary);padding:2px 7px;border:1px solid var(--border);border-radius:4px;cursor:pointer">1×</span>
+    <span style="font-size:12px;color:var(--text-tertiary)">↩15</span>
+    <span style="font-size:12px;color:var(--text-tertiary)">30↪</span>
+    <span style="font-size:14px">🔉</span>
+    <input type="range" style="width:52px;accent-color:var(--accent)" value="80" min="0" max="100">
+  </div>
+</div>
+
+<div class="episode-body" id="epBody" style="height:820px">
+  <div class="glyph-col" id="glyphCol"></div>
+  <div class="rail-col" id="railCol">
+    <div class="rail"></div>
+    <div class="rail-elapsed" id="railElapsed"></div>
+    <div class="playhead" id="playhead"></div>
+  </div>
+  <div class="ann-col" id="annCol"></div>
+  <div class="activity-col">
+    <div class="activity-header"><div class="live-dot"></div> Episode Activity</div>
+    <div class="act-item">
+      <div class="act-meta"><div class="act-av" style="background:#D4622B">JR</div><span class="act-name">JR</span><span class="act-time">just now</span></div>
+      <div class="act-text">This is the most insane origin story 😂</div>
+    </div>
+    <div class="act-item">
+      <div class="act-meta"><div class="act-av" style="background:#2E6B4F">AM</div><span class="act-name">AM</span><span class="act-time">2m ago</span></div>
+      <div class="act-text">Didn't realise how close Nvidia came to being a GPU for gaming only</div>
+    </div>
+    <div class="act-item">
+      <div class="act-meta"><div class="act-av" style="background:#6B5E52">SK</div><span class="act-name">SK</span><span class="act-time">5m ago</span></div>
+      <div class="act-text">Glad I found this community</div>
+    </div>
+    <div class="act-item">
+      <div class="act-meta"><div class="act-av" style="background:#8B5E3C">TO</div><span class="act-name">TO</span><span class="act-time">8m ago</span></div>
+      <div class="act-text">CUDA was the real bet</div>
+    </div>
+    <div class="timeless-composer">
+      <div class="timeless-label">Leave a timeless comment…</div>
+      <input class="timeless-input" type="text" placeholder="Your thought on this episode…">
+      <button class="timeless-btn">Post</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const DURATION = 84 * 60 + 18;
+const PLAYHEAD_TIME = 27 * 60 + 6;
+const BODY_HEIGHT = 820;
+
+const annotations = [
+  { time: 4*60+12,  user:'JR', color:'#D4622B', text:'Love how they frame the early GPU wars. Pure chaos.', reactions:{'❤️':3,'🔥':1} },
+  { time: 9*60+44,  user:'AM', color:'#2E6B4F', text:'The "sexy elves" pitch is one of the funniest things in tech history.', reactions:{'😂':5,'❤️':2} },
+  { time:14*60+30,  user:'SK', color:'#6B5E52', text:'Jensen Huang is an absolute missionary for his product vision.', reactions:{'💡':4,'❤️':2,'🔥':1} },
+  { time:22*60+10,  user:'TO', color:'#8B5E3C', text:'CUDA bet was the inflection point. Everything else followed.', reactions:{'💡':6,'🔥':3} },
+  { time:27*60+6,   user:'JR', color:'#D4622B', text:'The data centre pivot — nobody saw this coming in 2012.', reactions:{'🤯':4,'💡':2}, highlight:true },
+  { time:35*60+50,  user:'AM', color:'#2E6B4F', text:'The transformer moment is where everything snapped into place.', reactions:{'🔥':7,'🤯':3,'💡':2} },
+  { time:48*60+20,  user:'SK', color:'#6B5E52', text:'A trillion dollar company. In gaming cards. Unbelievable arc.', reactions:{'❤️':5,'🔥':4} },
+];
+
+// Stagger levels — 3 horizontal indents, cycle through them
+const STAGGER_OFFSETS = [12, 44, 76]; // px from left edge of ann column
+// Card widths vary too for visual rhythm
+const CARD_WIDTHS = [220, 200, 185];
+
+function formatTime(s) {
+  return `${Math.floor(s/60)}:${Math.floor(s%60).toString().padStart(2,'0')}`;
+}
+function pct(t) { return (t / DURATION) * 100; }
+
+const glyphCol = document.getElementById('glyphCol');
+const railCol  = document.getElementById('railCol');
+const annCol   = document.getElementById('annCol');
+
+// ── Playhead & elapsed rail ──
+const playheadPct = pct(PLAYHEAD_TIME);
+const playheadPx  = (playheadPct/100) * BODY_HEIGHT;
+document.getElementById('playhead').style.top = `${playheadPx}px`;
+document.getElementById('railElapsed').style.height = `${playheadPx}px`;
+
+// ── Time ticks ──
+[0,10,20,30,40,50,60,70,80].forEach(min => {
+  const top = (min*60 / DURATION) * BODY_HEIGHT;
+  const tick = document.createElement('div');
+  tick.className = 'tick-mark';
+  tick.style.top = `${top}px`;
+  tick.innerHTML = `<div class="tick-line"></div><span class="tick-label">${min}m</span>`;
+  railCol.appendChild(tick);
+});
+
+// ── Annotations + glyphs ──
+annotations.forEach((ann, i) => {
+  const top = pct(ann.time)/100 * BODY_HEIGHT;
+  const stagger = STAGGER_OFFSETS[i % STAGGER_OFFSETS.length];
+  const cardW   = CARD_WIDTHS[i % CARD_WIDTHS.length];
+  const isPast  = ann.time <= PLAYHEAD_TIME;
+
+  // Ambient glow on rail
+  const totalR = Object.values(ann.reactions).reduce((a,b)=>a+b,0);
+  const glowEl = document.createElement('div');
+  glowEl.style.cssText = `position:absolute;top:${top}px;left:50%;transform:translate(-50%,-50%);
+    width:${20+totalR*4}px;height:${20+totalR*4}px;border-radius:50%;pointer-events:none;
+    background:radial-gradient(circle,rgba(212,98,43,${Math.min(0.25+totalR*0.02,0.55)}) 0%,rgba(212,98,43,0) 70%);`;
+  railCol.appendChild(glowEl);
+
+  // GLYPH CLUSTER — left column, right-aligned toward rail
+  const cluster = document.createElement('div');
+  cluster.className = 'glyph-cluster';
+  cluster.style.top = `${top}px`;
+  let glyphHtml = '';
+  for (const [emoji, count] of Object.entries(ann.reactions)) {
+    const sz = Math.min(10 + count * 2, 20);
+    const rpt = Math.min(count, 3);
+    glyphHtml += `<div class="glyph-row">${Array(rpt).fill(`<span style="font-size:${sz}px;opacity:${isPast?1:0.4}">${emoji}</span>`).join('')}</div>`;
+  }
+  cluster.innerHTML = glyphHtml;
+  glyphCol.appendChild(cluster);
+
+  // ANNOTATION CARD — right column, staggered
+  const card = document.createElement('div');
+  card.className = `ann-card${ann.highlight?' ann-highlight':''}`;
+  card.style.top  = `${top}px`;
+  card.style.left = `${stagger}px`;
+  card.style.width = `${cardW}px`;
+
+  // Hairline from left edge of card back to rail left edge
+  // The rail col is between glyph col and ann col — hairline extends left from card
+  card.innerHTML = `
+    <div class="hairline" style="width:${stagger + 8}px">
+      <div class="hairline-dot"></div>
+    </div>
+    <div class="ann-inner">
+      <div class="ann-meta">
+        <div class="ann-avatar" style="background:${ann.color}">${ann.user}</div>
+        <span class="ann-name">${ann.user}</span>
+        <span class="ann-ts">▶ ${formatTime(ann.time)}</span>
+      </div>
+      <div class="ann-text">${ann.text}</div>
+    </div>
+  `;
+  annCol.appendChild(card);
+});
+
+// ── Composer at playhead ──
+const composer = document.createElement('div');
+composer.className = 'ann-composer';
+composer.style.top  = `${playheadPx + 36}px`;
+composer.style.left = `${STAGGER_OFFSETS[annotations.length % STAGGER_OFFSETS.length]}px`;
+composer.style.right = '0';
+composer.innerHTML = `
+  <div class="ann-composer-inner">
+    <span style="font-size:10px;font-weight:700;color:var(--accent);background:rgba(212,98,43,0.08);padding:2px 6px;border-radius:3px;flex-shrink:0">⏱ 27:06</span>
+    <input type="text" placeholder="Annotate this moment…" style="flex:1;border:none;background:none;font-size:12px;font-family:Inter,sans-serif;color:var(--text);outline:none">
+    <button style="background:var(--accent);color:white;border:none;border-radius:5px;padding:4px 10px;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap">Post</button>
+  </div>
+`;
+annCol.appendChild(composer);
+</script>
+</body>
+</html>
